@@ -1,12 +1,9 @@
 package firstTask;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class FirstTaskRunner {
-
     private static Person[] RAW_DATA = new Person[]{
             new Person(0, "Harry"),
             new Person(0, "Harry"),
@@ -23,33 +20,56 @@ public class FirstTaskRunner {
     };
 
     public static void main(String[] args) {
-        System.out.println("Исходный набор объектов типа Person:");
-        for (Person item : RAW_DATA) {
-            System.out.println(item.id + " : " + item.name);
-        }
+        Map<String, Long> stringListMap = advancedSortingVersion1(RAW_DATA);
         System.out.println();
-        Map<String, List<Person>> stringListMap = advancedSorting(RAW_DATA);
-        printMapOfPersons(stringListMap);
+        System.out.println(stringListMap + "\n");
+
+        Map<String, List<Person>> stringListMap1 = advancedSortingVersion2(RAW_DATA);
+        System.out.println();
+        System.out.println(stringListMap1 + "\n");
     }
 
-    public static Map<String, List<Person>> advancedSorting(Person[] objArray) {
-        return Arrays.stream(objArray)
+    /**
+     * @param objArray  массив объектов типа Person
+     * @return  Возвращается коллекция типа Map, ключ - сгруппированное имя, значение - число,
+     * отражающее количество id, которые отсортированы в возрастающем порядке, без дубликатов.
+     */
+    public static Map<String, Long> advancedSortingVersion1(Person[] objArray) {
+        Map<String, Long> collect = Arrays.stream(objArray)
+                .filter(person -> Objects.nonNull(person) && person.getName() != null)
                 .distinct()
-                .collect(Collectors.groupingBy(Person::getName));
+                .sorted(Comparator.comparingInt(Person::getId))
+                .collect(Collectors.groupingBy(Person::getName, Collectors.counting()));
+        printMapOfPersonsVersion1(collect);
+        return collect;
     }
 
-    public static void printMapOfPersons(Map<String, List<Person>> sortingMap) {
-        System.out.println("Карта без дубликатов, которая отсортирована по id и сгруппирована по имени:\n");
+    private static void printMapOfPersonsVersion1(Map<String, Long> sortingMap) {
+        for (Map.Entry<String, Long> entry : sortingMap.entrySet()) {
+            System.out.println("Key: " + entry.getKey());
+            System.out.println("Value: " + entry.getValue());
+        }
+    }
+
+    /**
+     * @param objArray  массив объектов типа Person
+     * @return  Возвращается коллекция типа Map, ключ - сгруппированное имя, значение - список, в котором
+     * id отсортированы в возрастающем порядке, без дубликатов.
+     */
+    public static Map<String, List<Person>> advancedSortingVersion2(Person[] objArray) {
+        Map<String, List<Person>> collect = Arrays.stream(objArray)
+                .filter(person -> Objects.nonNull(person) && person.getName() != null)
+                .distinct()
+                .sorted(Comparator.comparing(Person::getId))
+                .collect(Collectors.groupingBy(Person::getName, Collectors.toList()));
+        printMapOfPersonsVersion2(collect);
+        return collect;
+    }
+
+    private static void printMapOfPersonsVersion2(Map<String, List<Person>> sortingMap) {
         for (Map.Entry<String, List<Person>> entry : sortingMap.entrySet()) {
-            System.out.println(entry.getKey() + ": ");
-            System.out.println("_______________");
-            System.out.println("id   | name  ");
-            System.out.println("---------------");
-            for (Person person : entry.getValue()) {
-                System.out.printf("%-4d | %-10s", person.id, person.name);
-                System.out.println();
-            }
-            System.out.println("_______________\n");
+            System.out.println("Key: " + entry.getKey());
+            System.out.println("Value: " + entry.getValue().size());
         }
     }
 }

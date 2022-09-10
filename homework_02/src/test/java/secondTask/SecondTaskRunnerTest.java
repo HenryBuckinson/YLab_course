@@ -3,6 +3,8 @@ package secondTask;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import secondTask.Exceptions.ArrayDataException;
+import secondTask.Exceptions.ArraySizeException;
 
 
 class SecondTaskRunnerTest {
@@ -17,12 +19,32 @@ class SecondTaskRunnerTest {
     }
 
     @Test
-    @DisplayName("Выброс исключения в случае, если не удается найти подходящую пару чисел")
-    void shouldThrowArithmeticException() {
+    @DisplayName("Обработка исключения в случае, если не удается найти подходящую пару чисел")
+    void shouldThrowArithmeticException1() {
         try {
             SecondTaskRunner.coupleOfSumNumber(new int[]{3, 4, 2, 7}, 12);
         } catch (ArithmeticException e) {
             Assertions.assertEquals("Интересующей пары чисел не обнаружено", e.getMessage());
+        }
+    }
+
+    @Test
+    @DisplayName("Обработка исключения в случае, если входной массив пустой")
+    void shouldThrowArithmeticException2() {
+        try {
+            SecondTaskRunner.coupleOfSumNumber(new int[]{}, 12);
+        } catch (ArraySizeException e) {
+            Assertions.assertEquals("Входной массив пустой", e.getMessage());
+        }
+    }
+
+    @Test
+    @DisplayName("Обработка исключения в случае, если на входной массив отсутствует ссылка")
+    void shouldThrowArithmeticException3() {
+        try {
+            SecondTaskRunner.coupleOfSumNumber(null, 12);
+        } catch (ArrayDataException e) {
+            Assertions.assertEquals("На входной массив отсутствует ссылка", e.getMessage());
         }
     }
 }

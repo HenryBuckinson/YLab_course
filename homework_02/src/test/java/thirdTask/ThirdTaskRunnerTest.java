@@ -27,5 +27,9 @@ class ThirdTaskRunnerTest {
         Assertions.assertTrue(ThirdTaskRunner.fuzzySearch("banana", "aanabananza"));
         Assertions.assertTrue(ThirdTaskRunner.fuzzySearch("tenet", "tenet"));
         Assertions.assertFalse(ThirdTaskRunner.fuzzySearch("opera", "arepo"));
+        Assertions.assertFalse(ThirdTaskRunner.fuzzySearch("", ""));
+        Assertions.assertFalse(ThirdTaskRunner.fuzzySearch(null, ""));
+        Assertions.assertFalse(ThirdTaskRunner.fuzzySearch("", null));
+        Assertions.assertFalse(ThirdTaskRunner.fuzzySearch(null, null));
     }
 }
